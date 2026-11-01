@@ -1,0 +1,20 @@
+# secrets and local state
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+secrets/
+data/private/
+*.local.json
+
+# dependencies and build output
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+
+# editor and OS
+.DS_Store
+.vscode/
+.idea/
