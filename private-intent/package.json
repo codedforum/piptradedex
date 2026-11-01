@@ -11,13 +11,15 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "gen:oneclick": "openapi-typescript https://1click.chaindefuser.com/docs/v0/openapi.yaml -o packages/oneclick/src/schema.d.ts",
-    "demo": "tsx apps/cli/src/demo.ts"
+    "demo": "tsx apps/cli/src/demo.ts",
+    "bundle": "esbuild apps/bundle/src/entry.ts --bundle --platform=node --format=cjs --target=node22 --outfile=dist/private-intent.cjs"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
     "openapi-typescript": "^7.13.0",
     "tsx": "^4.23.0",
     "typescript": "^5.9.0",
-    "vitest": "^5.0.0"
+    "vitest": "^5.0.0",
+    "esbuild": "^0.28.0"
   }
 }

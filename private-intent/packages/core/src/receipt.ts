@@ -47,7 +47,8 @@ export interface ReceiptInput {
   intentHashes?: string[];
   nearTxHashes?: string[];
   status?: string;
-  platformFeeBps: number;
+  /** Stated only when the integrator discloses it. Omitted otherwise. */
+  platformFeeBps?: number | undefined;
   /** Present when the deposit or payout side runs through a Confidential Intents balance. */
   shieldTxHash?: string;
   unshieldTxHash?: string;
@@ -129,7 +130,7 @@ export function buildReceipt(input: ReceiptInput): PrivacyReceipt {
       ...(input.status ? { status: input.status } : {}),
       ...(input.intentHashes?.length ? { intentHashes: input.intentHashes.join(',') } : {}),
       ...(input.nearTxHashes?.length ? { nearTxHashes: input.nearTxHashes.join(',') } : {}),
-      platformFeeBps: String(input.platformFeeBps),
+      ...(input.platformFeeBps !== undefined ? { platformFeeBps: String(input.platformFeeBps) } : {}),
     },
     notes: swapConfidential
       ? [

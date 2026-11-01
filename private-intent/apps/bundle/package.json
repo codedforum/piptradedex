@@ -1,0 +1,12 @@
+{
+  "name": "@private-intent/bundle",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@private-intent/core": "*",
+    "@private-intent/leak": "*",
+    "@private-intent/nearai": "*",
+    "@private-intent/oneclick": "*"
+  }
+}
