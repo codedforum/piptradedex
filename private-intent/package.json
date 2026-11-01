@@ -10,7 +10,8 @@
   "scripts": {
     "test": "vitest run",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "gen:oneclick": "openapi-typescript https://1click.chaindefuser.com/docs/v0/openapi.yaml -o packages/oneclick/src/schema.d.ts"
+    "gen:oneclick": "openapi-typescript https://1click.chaindefuser.com/docs/v0/openapi.yaml -o packages/oneclick/src/schema.d.ts",
+    "demo": "tsx apps/cli/src/demo.ts"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
