@@ -20,6 +20,17 @@ Requires Node 22 or newer. No keys are needed for the demo.
 4. `ONECLICK_API_KEY=<partner jwt> LIVE_ONECLICK=1 npm test -- packages/oneclick` runs the live dry quote test.
 5. `NEAR_AI_API_KEY=<key> LIVE_NEARAI=1 npm test -- packages/nearai` runs one end-to-end encrypted completion and verifies its signature, printing the headers used and the verdict.
 
+## Live in PipTradeDex
+
+The packages here are bundled (`npm run bundle`, output `dist/private-intent.cjs`) and loaded by the live PipTradeDex app at https://piptradedex.xyz, whose application source is closed. What the live app gained during the hackathon, all built on this library:
+
+- Privacy Receipt on every finished swap (button on the swap card), with a download of the hashed JSON.
+- A plain-English order box on the Trade page. The text is encrypted to the attested model key on NEAR AI Cloud, the reply is signature checked, and the compiled plan fills the existing swap or limit form. Nothing moves until the user confirms as before.
+- Ladders: one instruction becomes 2 to 5 private limit orders on NEAR Intents.
+- https://piptradedex.xyz/privacy-lab: a live attestation check with a fresh nonce, the leak study over the app's own completed trades, and the receipt rules.
+
+The glue in the live app is thin (one server module and one client script) and is described in [docs/INTEGRATION_MAP.md](docs/INTEGRATION_MAP.md). Everything judged is in this folder.
+
 ## How NEAR is used
 
 See [docs/INTEGRATION_MAP.md](docs/INTEGRATION_MAP.md). In short: 1Click for quotes, confidential routes and limit orders; NEAR AI Cloud for the encrypted parse with attestation and response signatures.

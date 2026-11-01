@@ -11,3 +11,14 @@
 | Response signature over exact bytes | NEAR AI Cloud, response signatures | `packages/nearai/src/signature.ts` | `signature.test.ts` |
 | Privacy Receipt | describes the legs above | `packages/core/src/receipt.ts`, rules in `docs/RECEIPT_RULES.md` | `receipt.test.ts` |
 | Leak tester | public chain data only | `packages/leak/src` | `link.test.ts`, study report pending |
+
+## In the live app (closed source, described here)
+
+| piece | built on | surface |
+| --- | --- | --- |
+| Privacy Receipt per trade | `core.buildReceipt` fed with the trade's chains, route and transaction hashes | `GET /api/trades/:id/privacy-receipt`, button on the finished swap card |
+| Encrypted order box | `nearai.privateChat`, `core.parseOrderSpec`, `core.compile` | `POST /api/ai/parse`, fills the swap or limit form through an event |
+| AI evidence on the receipt | parse evidence attached to the trade after the deposit card opens | `POST /api/ai/attach` |
+| Ladder | `core.ladderPrices` over the app's existing private limit order path | `POST /api/orders/ladder`, control in the limit panel |
+| Leak study | `leak.runStudy` over completed trades, usd amounts and times only | `GET /api/public/leak-study`, shown on `/privacy-lab` |
+| Attestation check | `nearai.fetchAndVerifyReport` with a fresh nonce | `GET /api/ai/attestation`, button on `/privacy-lab` |
