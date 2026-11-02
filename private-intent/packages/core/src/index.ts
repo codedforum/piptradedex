@@ -3,3 +3,5 @@ export * from './parse.js';
 export * from './compile.js';
 export * from './canonical.js';
 export * from './receipt.js';
+export * from './conversation.js';
+export * from './prompt.js';

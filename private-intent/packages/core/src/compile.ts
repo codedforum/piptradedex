@@ -22,6 +22,20 @@ export interface CompileContext {
   /** ISO timestamp after which an unfunded quote expires. */
   deadline: string;
   slippageBps?: number;
+  /** USD price of a token, used only when a swap amount is given in dollars. Absent means dollar amounts cannot compile. */
+  usdPrice?: (token: Token) => number | undefined;
+}
+
+/** The sell amount in whole tokens, converting a dollar amount at the context price. */
+export function sellAmount(spec: SwapSpec, origin: Token, ctx: CompileContext): string {
+  if (spec.amountUnit !== 'usd') return spec.amount;
+  const price = ctx.usdPrice?.(origin);
+  if (!(price && price > 0)) throw new CompileError(`a dollar amount needs a USD price for ${origin.symbol} on ${origin.blockchain}`);
+  const tokens = Number(spec.amount) / price;
+  const decimals = Math.min(origin.decimals, 8);
+  const s = tokens.toFixed(decimals).replace(/\.?0+$/, '');
+  if (!(Number(s) > 0)) throw new CompileError('the dollar amount is below one unit of the sell token');
+  return s;
 }
 
 function assertDestination(spec: { destination: string }, ctx: CompileContext): void {
@@ -44,7 +58,7 @@ export function compileSwap(spec: SwapSpec, ctx: CompileContext): QuoteInput {
     originAsset: origin.assetId,
     depositType: 'ORIGIN_CHAIN',
     destinationAsset: dest.assetId,
-    amount: toSmallestUnit(spec.amount, origin.decimals),
+    amount: toSmallestUnit(sellAmount(spec, origin, ctx), origin.decimals),
     refundTo: ctx.refundTo,
     refundType: 'ORIGIN_CHAIN',
     recipient: ctx.confirmedDestination,
@@ -120,7 +134,8 @@ export type CompiledPlan =
   | { kind: 'SWAP'; quote: QuoteInput }
   | { kind: 'LIMIT'; order: OrderAttributes }
   | { kind: 'LADDER'; orders: OrderAttributes[] }
-  | { kind: 'CANCEL'; orderIds: string[] | 'all' };
+  | { kind: 'CANCEL'; orderIds: string[] | 'all' }
+  | { kind: 'QUESTION'; question: string; missing: string[] };
 
 export function compile(spec: OrderSpec, ctx: CompileContext): CompiledPlan {
   switch (spec.kind) {
@@ -132,5 +147,7 @@ export function compile(spec: OrderSpec, ctx: CompileContext): CompiledPlan {
       return { kind: 'LADDER', orders: compileLadder(spec, ctx) };
     case 'CANCEL':
       return { kind: 'CANCEL', orderIds: spec.orderIds };
+    case 'QUESTION':
+      return { kind: 'QUESTION', question: spec.question, missing: spec.missing };
   }
 }

@@ -80,4 +80,14 @@ describe('parseOrderSpec', () => {
       expect(err.issues.some((i) => i.startsWith('destination'))).toBe(true);
     }
   });
+
+  it('parses a question and defaults the swap amount unit to token', () => {
+    const q = parseOrderSpec('{"kind":"QUESTION","question":"Which chain is your USDC on?","missing":["chain"]}');
+    expect(q.kind).toBe('QUESTION');
+    const s = parseOrderSpec(JSON.stringify(swap));
+    expect(s.kind === 'SWAP' && s.amountUnit).toBe('token');
+    const usd = parseOrderSpec(JSON.stringify({ ...swap, amountUnit: 'usd' }));
+    expect(usd.kind === 'SWAP' && usd.amountUnit).toBe('usd');
+    expect(() => parseOrderSpec('{"kind":"QUESTION","question":"?","missing":[]}')).toThrow(SpecParseError);
+  });
 });

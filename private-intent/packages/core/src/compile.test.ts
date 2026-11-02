@@ -16,6 +16,7 @@ const swap: SwapSpec = {
   sell: { symbol: 'USDC', blockchain: 'base' },
   buy: { symbol: 'USDC', blockchain: 'near' },
   amount: '5',
+  amountUnit: 'token',
   privacy: 'basic',
   destination: 'alice.near',
 };
@@ -104,5 +105,16 @@ describe('compileLimit and ladder', () => {
 
   it('cancel passes through', () => {
     expect(compile({ kind: 'CANCEL', orderIds: 'all' }, ctx)).toEqual({ kind: 'CANCEL', orderIds: 'all' });
+  });
+
+  it('converts a dollar amount at the context price and refuses without one', () => {
+    const usd: SwapSpec = { ...swap, amount: '10', amountUnit: 'usd' };
+    expect(() => compileSwap(usd, ctx)).toThrow(/USD price/);
+    const q = compileSwap(usd, { ...ctx, usdPrice: () => 2 });
+    expect(q.amount).toBe('5000000');
+  });
+  it('turns a question spec into a question plan', () => {
+    const p = compile({ kind: 'QUESTION', question: 'How much?', missing: ['amount'] }, ctx);
+    expect(p).toEqual({ kind: 'QUESTION', question: 'How much?', missing: ['amount'] });
   });
 });

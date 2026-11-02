@@ -18,6 +18,8 @@ export const SwapSpecSchema = z.strictObject({
   sell: AssetSchema,
   buy: AssetSchema,
   amount: decimalAmount,
+  /** "token" counts the sell asset, "usd" is a dollar amount that the compiler converts at a price it is given. */
+  amountUnit: z.enum(['token', 'usd']).default('token'),
   privacy: z.enum(['basic', 'advanced']),
   destination,
 });
@@ -52,15 +54,28 @@ export const CancelSpecSchema = z.strictObject({
   orderIds: z.union([z.literal('all'), z.array(z.string().min(1)).min(1)]),
 });
 
+/** What the model still needs before it can return an order. Each value maps to one short question. */
+export const MissingFieldSchema = z.enum(['amount', 'sell', 'buy', 'chain', 'privacy', 'price', 'destination', 'side', 'other']);
+
+/** The model asks one question instead of guessing. The conversation continues with the user's answer. */
+export const QuestionSpecSchema = z.strictObject({
+  kind: z.literal('QUESTION'),
+  question: z.string().min(5).max(300),
+  missing: z.array(MissingFieldSchema).min(1).max(4),
+});
+
 export const OrderSpecSchema = z.discriminatedUnion('kind', [
   SwapSpecSchema,
   LimitSpecSchema,
   LadderSpecSchema,
   CancelSpecSchema,
+  QuestionSpecSchema,
 ]);
 
 export type SwapSpec = z.infer<typeof SwapSpecSchema>;
 export type LimitSpec = z.infer<typeof LimitSpecSchema>;
 export type LadderSpec = z.infer<typeof LadderSpecSchema>;
 export type CancelSpec = z.infer<typeof CancelSpecSchema>;
+export type QuestionSpec = z.infer<typeof QuestionSpecSchema>;
+export type MissingField = z.infer<typeof MissingFieldSchema>;
 export type OrderSpec = z.infer<typeof OrderSpecSchema>;
