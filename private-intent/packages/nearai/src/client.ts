@@ -25,6 +25,8 @@ export interface PrivateChatOptions {
   encryptAllFields?: boolean | undefined;
   fetch?: typeof fetch | undefined;
   signatureRetries?: number | undefined;
+  /** Extra top-level fields for the chat body, such as a provider's reasoning switch. Never encrypted. */
+  extraBody?: Record<string, unknown> | undefined;
 }
 
 export interface PrivateChatResult {
@@ -68,6 +70,7 @@ export async function privateChat(options: PrivateChatOptions): Promise<PrivateC
     messages: options.messages.map((m) => ({ role: m.role, content: encryptStringHex(m.content, modelX25519) })),
     ...(options.temperature !== undefined ? { temperature: options.temperature } : {}),
     ...(options.maxTokens !== undefined ? { max_tokens: options.maxTokens } : {}),
+    ...(options.extraBody ?? {}),
   });
   const requestBytes = utf8ToBytes(body);
   const headersSent: Record<string, string> = {
