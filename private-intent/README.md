@@ -46,6 +46,8 @@ Measured numbers only. Updated as the build goes on.
 | gateway attestation, fresh nonce | report_data binds signer and nonce | `npm run demo`, 2026-11-01 |
 | confidential dry quote without authentication | 401, authentication required | observed 2026-11-01 |
 | live E2EE parse, signature verified, prompt leg Confidential | 8 to 22 s per turn on z-ai/glm-5.3-flash | live app evidence panel, 2026-11-02 |
+| live E2EE completion on other attested models | Qwen/Qwen3.8-27B and deepseek-ai/DeepSeek-V4.1-Flash-1017 pass, signature verified | `LIVE_NEARAI=1 NEAR_AI_MODEL=<id> npm test -- packages/nearai`, 2026-11-02 |
+| models without an attestation report | deepseek/deepseek-v3.2, moonshotai/kimi-k2.6, google/gemini-3.5-flash return 503 on the report, the client refuses to send the prompt | same, 2026-11-02 |
 | leak study, confidential basic arm | 101 trades, 90 uniquely linked (0.891) | [experiments/leak-study/REPORT.md](experiments/leak-study/REPORT.md), 2026-11-02 |
 | leak study, public arm | 15 trades, 13 uniquely linked (0.867) | same |
 
