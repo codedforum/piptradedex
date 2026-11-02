@@ -1,0 +1,22 @@
+{
+    "ok": true,
+    "generatedAt": "2026-11-02T17:27:48.542Z",
+    "method": "usd amount match within 2%, payout inside 1 hour after deposit, address reuse, pair rarity; adversary sees chain, usd size and time only",
+    "arms": {
+        "private": {
+            "trades": 101,
+            "uniquelyLinked": 90,
+            "correctlyLinked": 90,
+            "meanAnonymitySet": 1.02,
+            "linkedFraction": 0.891
+        },
+        "public": {
+            "trades": 15,
+            "uniquelyLinked": 13,
+            "correctlyLinked": 13,
+            "meanAnonymitySet": 0.87,
+            "linkedFraction": 0.867
+        }
+    },
+    "note": "Both arms settle through public deposit and payout transactions, so this measures the usd and timing correlation an outside observer gets from chain data. A small sample proves nothing by itself; the sizes are shown."
+}

@@ -2,14 +2,14 @@
 
 Type a trade in plain English. The prompt is parsed by an attested TEE model on NEAR AI Cloud under end-to-end encryption, the trade settles through NEAR Intents confidential routes, and every trade ships with a Privacy Receipt that states, leg by leg, what is hidden, what is public, what links identities, and what is not known.
 
-Built at NEAR HACKATHON, November 1 to November 14, 2026. Tracks: privacy, defi.
+Built at NEAR HACKATHON, November 1 to November 14, 2026. Tracks: privacy, defi, security.
 
 ## Try it (do X, see Y)
 
 Requires Node 22 or newer. No keys are needed for the demo.
 
 1. `cd private-intent && npm ci` prints the install summary.
-2. `npm test` runs every unit test, expect `60 passed` and `3 skipped` (the skipped ones are live tests).
+2. `npm test` runs every unit test, expect `72 passed` and `3 skipped` (the skipped ones are live tests).
 3. `npm run demo` prints six numbered sections:
    - section 1 echoes the parsed order spec,
    - section 2 the compiled 1Click request with `confidentiality: 'basic'`,
@@ -26,6 +26,7 @@ The packages here are bundled (`npm run bundle`, output `dist/private-intent.cjs
 
 - Privacy Receipt on every finished swap (button on the swap card), with a download of the hashed JSON.
 - A plain-English order box on the Trade page. The text is encrypted to the attested model key on NEAR AI Cloud, the reply is signature checked, and the compiled plan fills the existing swap or limit form. Nothing moves until the user confirms as before.
+- The box holds a short conversation. When an instruction lacks an amount, a chain or a side, the model returns a QUESTION and the box asks it; the answer is sent with the earlier turns (at most six, each capped at 600 characters, validated server side). Dollar amounts (`$20 of usdc`) are converted at the app's price at compile time. A destination typed by the user is relayed into the form's external recipient field, and the compiler refuses any destination the model names that the user never typed (`packages/core/src/conversation.ts`).
 - Ladders: one instruction becomes 2 to 5 private limit orders on NEAR Intents.
 - https://piptradedex.xyz/privacy-lab: a live attestation check with a fresh nonce, the leak study over the app's own completed trades, and the receipt rules.
 
@@ -44,6 +45,9 @@ Measured numbers only. Updated as the build goes on.
 | public dry quote, 5 USDC Base to USDC NEAR | 4.9996 USDC out, 35 s estimate | `packages/oneclick/src/fixtures/quote-public-dry.json`, 2026-11-01 |
 | gateway attestation, fresh nonce | report_data binds signer and nonce | `npm run demo`, 2026-11-01 |
 | confidential dry quote without authentication | 401, authentication required | observed 2026-11-01 |
+| live E2EE parse, signature verified, prompt leg Confidential | 8 to 22 s per turn on z-ai/glm-5.3-flash | live app evidence panel, 2026-11-02 |
+| leak study, confidential basic arm | 101 trades, 90 uniquely linked (0.891) | [experiments/leak-study/REPORT.md](experiments/leak-study/REPORT.md), 2026-11-02 |
+| leak study, public arm | 15 trades, 13 uniquely linked (0.867) | same |
 
 ## Limits
 
@@ -62,6 +66,8 @@ The same person submits one other independent project, Mandate, in the Rex repos
 ## Security
 
 - The model output is data, never instructions. It is validated by a strict schema, unknown fields are rejected, and the compiler pins the recipient to the destination the user confirmed, so a prompt injection cannot redirect funds (`packages/core/src/compile.test.ts`).
+- A destination in the plan must appear verbatim in a text the user typed, in this turn or an earlier one, or the plan is rejected before it reaches the form (`packages/core/src/conversation.test.ts`). The conversation history is validated for shape, length and turn order before it is sent to the model.
+- The system prompt lists only the symbols and chains the app trades, so the model cannot name an asset outside the catalog.
 - Attestation reports are verified against a client nonce before a prompt is sent. Response signatures are checked over the exact bytes and matched to that preflight evidence.
 - No keys are in this repository. `.env.example` lists variable names only.
 
@@ -74,7 +80,7 @@ packages/nearai     E2EE crypto, attestation, signature verification, private ch
 packages/leak       linkability heuristics and study runner
 apps/cli            demo entry point
 docs                LIMITS, INTEGRATION_MAP, RECEIPT_RULES
-experiments         leak study data and report (pending)
+experiments         leak study data and report
 ```
 
 ## License
