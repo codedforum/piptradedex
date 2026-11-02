@@ -93,10 +93,14 @@ export async function privateChat(options: PrivateChatOptions): Promise<PrivateC
   const parsed = JSON.parse(new TextDecoder().decode(responseBytes)) as {
     id: string;
     model: string;
-    choices: { message: { content: string; reasoning_content?: string; reasoning?: string } }[];
+    choices: { finish_reason?: string; message: { content: string | null; reasoning_content?: string; reasoning?: string } }[];
   };
-  const msg = parsed.choices[0]?.message;
+  const choice = parsed.choices[0];
+  const msg = choice?.message;
   if (!msg) throw new Error('completion has no choices');
+  if (typeof msg.content !== 'string') {
+    throw new Error(`completion has no content (finish_reason ${choice?.finish_reason ?? 'unknown'}); raise maxTokens, reasoning models spend tokens before answering`);
+  }
   const content = decryptHexString(msg.content, client.x25519Secret);
   const reasoningHex = msg.reasoning_content ?? msg.reasoning;
   const reasoning = reasoningHex ? decryptHexString(reasoningHex, client.x25519Secret) : undefined;

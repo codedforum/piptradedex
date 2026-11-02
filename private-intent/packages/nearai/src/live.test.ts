@@ -18,7 +18,7 @@ describe.skipIf(!live)('NEAR AI Cloud live', () => {
       apiKey: key as string,
       model,
       messages: [{ role: 'user', content: 'Reply with the single word: ready' }],
-      maxTokens: 20,
+      maxTokens: 400,
       encryptAllFields: true,
     });
     console.log(JSON.stringify({ model: r.model, content: r.content, signature: r.signature, headers: Object.keys(r.headersSent) }, null, 2));
