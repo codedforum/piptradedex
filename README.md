@@ -11,7 +11,7 @@ Type a trade in plain English. The prompt is parsed inside an attested TEE model
 
 Code: [private-intent/](./private-intent/). Run it: see the README in that folder.
 
-Tracks: privacy, defi.
+Tracks: privacy, defi, security.
 
 ## Prior work vs built in this fortnight
 
