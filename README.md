@@ -19,8 +19,6 @@ This repository has existed since 2026-10-17 as a README only (tag `pre-hackatho
 
 Everything under `private-intent/` was written from November 1, 2026 and does not copy production code. The hackathon diff is the range `pre-hackathon...hackathon-submission`: https://github.com/codedforum/piptradedex/compare/pre-hackathon...hackathon-submission
 
-The same person also submits a second, independent project, Mandate, an agent spending vault for the Rex trading bot: https://github.com/codedforum/rex. The two entries share no code.
-
 ## License
 
 MIT, see [LICENSE](./LICENSE). The license covers this repository only.

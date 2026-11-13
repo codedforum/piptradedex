@@ -59,8 +59,6 @@ Measured numbers only. Updated as the build goes on.
 
 The PipTradeDex application existed before the hackathon and is closed source. It is not part of this entry and no code was copied from it. Everything in this folder was written from November 1, 2026. The repository's first commit (2026-10-17, tag `pre-hackathon`) is a README only. Diff: `pre-hackathon...hackathon-submission`.
 
-The same person submits one other independent project, Mandate, in the Rex repository. They share no code.
-
 ## Tests
 
 `npm test` runs vitest across `packages/*`. `npm run typecheck` runs the TypeScript compiler in strict mode.
